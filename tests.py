@@ -1,15 +1,16 @@
+import pdb
 import transform
 from settings import CRYPTO_TO_TRACK, CRYPTO_EXPORTED_METRICS, STOCKS_TO_TRACK, STOCKS_EXPORTED_METRICS
 import json
 
 
 def has_all_metrics(el):
-    assert all(metric in el for metric in ['name', 'value', 'interval', 'time'])
+    return all(metric in el for metric in ['name', 'value', 'interval', 'time'])
 
 
 def test_parsing_livecoin():
 
-    with open('sample_livecoin.json') as f:
+    with open('tests_data/sample_livecoin.json') as f:
         data = json.load(f)
     
     metrics = transform.livecoin_to_metrics(data)
@@ -20,7 +21,7 @@ def test_parsing_livecoin():
 
 def test_parsing_iex():
 
-    with open('sample_iex.json') as f:
+    with open('tests_data/sample_iex.json') as f:
         data = json.load(f)
 
     metrics = transform.iex_to_metrics(data)

@@ -15,7 +15,7 @@ app.conf.CELERYBEAT_SCHEDULE = {
         "schedule": 60.0
     },
     "send_stocks_metrics": {
-        "task": "task.send_stocks_to_graphite",
+        "task": "tasks.send_stocks_to_graphite",
         "schedule": 60.0
     }
 }

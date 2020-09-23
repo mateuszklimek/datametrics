@@ -11,7 +11,7 @@ app.conf.update(BROKER_URL=settings.REDIS_URL,
 app.conf.CELERYBEAT_SCHEDULE = {
     "send_crypto_metrics": {
         "task": "tasks.send_livecoin_to_graphite",
-        "schedule": 6.0
+        "schedule": 60.0
     }
 }
 

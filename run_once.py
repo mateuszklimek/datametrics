@@ -6,8 +6,8 @@ if __name__ == "__main__":
         description='Run manual ingestion of metrics (crypto, stocks or both) to graphite'
     )
 
+    parser.add_argument('--crypto', action='store_true', help='Run ingestion of crypto data')
     parser.add_argument('--stocks', action='store_true', help='Run ingestion of stocks data')
-    parser.add_argument('--crypto', action='store_true', help='sum the integers (default: find the max)')
 
     args = parser.parse_args()
 

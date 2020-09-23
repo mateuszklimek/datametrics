@@ -12,7 +12,7 @@ IEX_CLOUD_API_TOKEN=os.environ['IEX_CLOUD_API_TOKEN']
 IEX_CLOUD_API_URL='https://cloud.iexapis.com/v1/stock/market/batch'
 
 CURRENCY = 'USD'
-CRYPTO_TO_TRACK = ['BTC', 'ETH', 'LINK', 'BAT']
+CRYPTO_TO_TRACK = ['BTC', 'ETH', 'BAT']
 CRYPTO_EXPORTED_METRICS = ['last', 'high', 'low', 'vwap', 'volume']
 
 STOCKS_TO_TRACK = ['AMZN', 'WORK', 'NFLX']

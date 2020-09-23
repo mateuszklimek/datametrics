@@ -18,8 +18,14 @@ def send_data(data):
     response = requests.post(
         settings.GRAPHITE_URL,
         json=data,
+        #TODO: Consider other auth methods
         auth=HTTPBasicAuth(settings.GRAPHITE_USER, settings.GRAPHITE_PASSWORD)
     )
+
+    if response.status_code != 200:
+        #TODO Proper handling of http exceptions logging and alerting on them
+        print ("Exception:", response.status_code, response.text)
+
     print (response.text)
 
 

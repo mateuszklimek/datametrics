@@ -1,4 +1,4 @@
-from tasks import send_livecoin_to_graphite, send_stocks_to_graphite
+from datametrics.tasks import send_livecoin_to_graphite, send_stocks_to_graphite
 import argparse
 
 if __name__ == "__main__":

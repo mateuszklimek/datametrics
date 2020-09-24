@@ -1,8 +1,10 @@
 import celery
 import requests
-import graphite
-import transform
-import settings
+from datametrics import (
+    graphite,
+    transform,
+    settings
+)
 
 app = celery.Celery(settings.CELERY_APP_NAME)
 app.conf.update(BROKER_URL=settings.REDIS_URL, CELERY_RESULT_BACKEND=settings.REDIS_URL)

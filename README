@@ -88,4 +88,6 @@ On Heroku side
  - some general Celery/redis performance metrics. Some of them are already available on Heroku.
 
 
+## Potential improvements
 
+Make tests runnable with py.test

@@ -1,2 +1,2 @@
-worker: celery worker --app=tasks.app
-beat: celery beat --app=tasks.app
+worker: celery worker --app=datametrics.tasks.app
+beat: celery beat --app=datametrics.tasks.app

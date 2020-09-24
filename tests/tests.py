@@ -1,6 +1,7 @@
 import pdb
-import transform
-from settings import (
+
+from datametrics import transform
+from datametrics.settings import (
     CRYPTO_TO_TRACK,
     CRYPTO_EXPORTED_METRICS,
     STOCKS_TO_TRACK,
@@ -22,7 +23,7 @@ def get_json_from_file(file_path):
 
 def test_parsing_livecoin():
 
-    data = get_json_from_file("tests_data/sample_livecoin.json")
+    data = get_json_from_file("tests/tests_data/sample_livecoin.json")
 
     metrics = transform.livecoin_to_metrics(data)
 
@@ -43,7 +44,7 @@ def test_parsing_livecoin():
 
 def test_parsing_iex():
 
-    data = get_json_from_file("tests_data/sample_iex.json")
+    data = get_json_from_file("tests/tests_data/sample_iex.json")
 
     metrics = transform.iex_to_metrics(data)
 

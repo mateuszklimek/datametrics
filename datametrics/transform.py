@@ -1,5 +1,5 @@
-from graphite import get_metric_values
-import settings
+from datametrics.graphite import get_metric_values
+from datametrics import settings
 
 
 def iex_to_metrics(json_response):

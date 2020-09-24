@@ -2,7 +2,7 @@ import requests
 import datetime
 from requests.auth import HTTPBasicAuth
 
-import settings
+from datametrics import settings
 
 
 def get_epoch_in_seconds():

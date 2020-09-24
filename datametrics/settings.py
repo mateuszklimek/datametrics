@@ -21,8 +21,8 @@ STOCKS_EXPORTED_METRICS = ["latestPrice", "iexAskPrice", "iexBidPrice"]
 CELERY_TASKS_TO_RUN = {
     "send_crypto_metrics": {
         "task": "datametrics.tasks.send_livecoin_to_graphite",
-        "schedule": 6.0,
+        "schedule": 60.0,
     },
-    "send_stocks_metrics": {"task": "datametrics.tasks.send_stocks_to_graphite", "schedule": 6.0},
+    "send_stocks_metrics": {"task": "datametrics.tasks.send_stocks_to_graphite", "schedule": 60.0},
 }
 CELERY_APP_NAME = "celery_metrics_sender"

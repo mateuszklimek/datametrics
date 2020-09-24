@@ -4,7 +4,7 @@ Pushing metrics (gathered from API/Internet) to graphite, to make them visible i
 
 ## Architecture
 
-Current projects setup looks like that.
+Current projects setup looks like that:
 There are celery tasks running every minute (could be configured to something more/less often in `settings.py`)
 Tasks are doing calls to APIs to gather info about crypto and stock prices, transform received data to `graphite` metrics format and do HTTP requests with metrics (in `json` format using BasictAuth) to graphite.
 
@@ -24,19 +24,25 @@ python run_once.py --crypto --stocks
 
 ## Running using heroku and celery
 
-TODO
+Setup for deploying to heroku was made using instructions from here: [here](https://devcenter.heroku.com/articles/celery-heroku)
+
+`Procfile` contains information about processes which will be run on heroku. Currently it's Celery worker and Celery beat
+
+Once setup is done (app with redis created and enviroment variables setup),
+to deploy app you need to commit changes to local repo and run
+
+```bash
+git push heroku master
+```
+You can view logs by doing:
+```bash
+heroku logs -t -p worker
+```
+//TODO: Possibly make a script for some standard setup to be done, it still requires some manual steps like setting up configs
 
 ## Scalability:
 
-### Storage 
-Storing metrics is done on `graphite` side, so to support much bigger number of metrics/data you need to make sure your graphite have space to that. With my current setup using GrafanaLabs I can store up to 100GB of logs there before being charged more.., but it should automatically scale with more usage.
-
-### Compute
-Celery side is deployed on heroku. So simplest way of scaling up and make sure we have more compute for reading/parsing metrics gathered is to add dynos to your celery workers: `heroku ps:scale worker=more`.
-
-For Graphite/Grafana similary if they are just hosted by GrafanaLabs they should scale (use more resources) with more traffic //TODO look for more details on that
-
-### Specific questions
+### Questions
 
 **How to support much larger of metrics?** From code perspective it should be easy to add new sources/metrics by either just updating `settings.py` or  adding new Celery tasks with different sources. If number of metrics we want to track is often changing, I think good idea would be to create relational database with those metrics and make it used by tasks so that deployment is not needed to add new metrics.
 
@@ -45,15 +51,41 @@ https://graphite.readthedocs.io/en/latest/feeding-carbon.html#using-amqp
 
 **Had many users accessing your dashboard to view metrics>** This is on Grafana side. Current plan support just 10 users so it obviously doesn't work with it. I read about people running grafana with 10,000 people TODO
 
+### Storage 
+Storing metrics is done only on `graphite` side, so to support much bigger number of metrics/data you need to make sure your graphite have space to that. With my current setup using GrafanaLabs I can store up to 100GB of logs there before being charged more.., but it should automatically scale with more usage. From what is see retention policies also ones which store data with less granularity are also possible to setup if we want to save on space stored: [https://graphite.readthedocs.io/en/latest/config-carbon.html](https://graphite.readthedocs.io/en/latest/config-carbon.html)
+
+### Compute
+For celery side, it is deployed on heroku. So simplest way of scaling up and make sure we have more compute for reading/parsing metrics gathered is to add dynos to your celery workers: `heroku ps:scale worker=more`. Overall I believe many celery tasks gathering various metrics could be run with this setup.
+
+For Graphite/Grafana similary if they are just hosted by GrafanaLabs they should scale (use more resources) with more traffic //TODO look for more details on that
+
+### Network
+Celery can run multiple tasks at once gathering and publishing various metrics. Sending data to Grafite could be definitely make much more efficient with using some libraries specific for that (not HTTP requests) more details here: [here](https://graphite.readthedocs.io/en/latest/feeding-carbon.html). But one important thing to remember is Celery will be doing HTTP requests for external API, so it will probably not shorter that much live of Celery tasks. 
+
 ## Monitoring:
 
-In general Grafana is quite good tool for monitoring so I would most likely use that. More details below. Apart from that heroku also has some build in monitoring (for redis - used by Celery) and possibly add flower here: https://github.com/bsab/heroku-celery-monitor
+As Grafana is hosted in the cloud I think it can be mostly be assumed frontend side is working (Or doesn't be cannot be fixed by me)
 
+So I think most important is making sure Celery processes are working properly and not receiving any errors when making requests to APIs or Graphite.
 
-**How would you track the health and uptime of your application**
+**How would you track the health and uptime of your application?** Assuming here with running Grafana in the servvice 
 
  - As project is already using grafana, I would also add logger which would dump any http errors we receive from requests
  to livecoin feed, or grafana's graphite. There is service on graphana called Loki so would like to use this one.
+
+**What would you be measuring and alerting on*?
+
+On Celery tasks side - requests HTTP errors and response time (both from external API's and Graphite.
+I would start with sending those using Loking to grafana and making dashboard for those logs there.
+
+On Grafana side 
+ - would be checking if data is coming, so alerting on situation when we didn't received new data for specific dashboards.
+Those allerts are is something actually already added.
+ - also could alert on some not expected data, for example for all crypto/stocks we can assume it will be larger than 0.
+ - costs or running it :) and for that they actually have dashboard already prepared
+
+On Heroku side
+ - some general Celery/redis performance metrics. Some of them are already available on Heroku.
 
 
 

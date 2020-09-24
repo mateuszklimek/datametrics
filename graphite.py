@@ -29,10 +29,10 @@ def send_data(data):
     print (response.text)
 
 
-def get_metric_values(metric_type, dict_el, metrics_values):
+def get_metric_values(metric_type, metric_symbol, dict_el, metrics_values):
     data = [
         {
-            'name': '{}.{}-{}'.format(metric_type, dict_el['symbol'], key),
+            'name': '{}.{}-{}'.format(metric_type, metric_symbol, key),
             'value': dict_el[key],
             'interval': 1,
             'time': get_epoch_in_seconds()

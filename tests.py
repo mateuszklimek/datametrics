@@ -17,6 +17,7 @@ def test_parsing_livecoin():
 
     assert len(metrics) == len(CRYPTO_TO_TRACK) * len(CRYPTO_EXPORTED_METRICS)
     assert all(has_all_metrics(el) for el in metrics)
+    print (metrics)
         
 
 def test_parsing_iex():
@@ -28,6 +29,7 @@ def test_parsing_iex():
 
     assert len(metrics) == len(STOCKS_TO_TRACK) * len(STOCKS_EXPORTED_METRICS)
     assert all(has_all_metrics(el) for el in metrics)
+    print (metrics)
 
 
 if __name__ == "__main__":

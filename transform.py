@@ -10,6 +10,7 @@ def iex_to_metrics(json_response):
         data_to_export.extend(
             get_metric_values(
                 'stocks',
+                symbol,
                 json_response[symbol]['quote'],
                 settings.STOCKS_EXPORTED_METRICS
             )
@@ -20,7 +21,7 @@ def iex_to_metrics(json_response):
 
 def livecoin_to_metrics(json_response):
     symbols_exported = [
-        f'{el}/{settings.CURRENCY}' for el in settings.CRYPTO_TO_TRACK
+        f'{el}/{settings.CRYPTO_COMPARE_CURRENCY}' for el in settings.CRYPTO_TO_TRACK
     ]
     data_to_export = []
     
@@ -30,6 +31,7 @@ def livecoin_to_metrics(json_response):
            data_to_export.extend(
                get_metric_values(
                    'crypto',
+                   crypto_el['symbol'],
                    crypto_el,
                    settings.CRYPTO_EXPORTED_METRICS
                )

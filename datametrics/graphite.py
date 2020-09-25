@@ -17,9 +17,6 @@ def send_data(data: List[Dict], health_metrics: List[Dict] = None):
 
     print("sending data:", to_send)
 
-    # TODO: There are more efficient formats than json (to send data) available.
-    # It's possible it's worth changing to them in case more efficient transfer
-    # is needed (etc. much bigger amounts of data are sent)
     response = requests.post(
         settings.GRAPHITE_URL,
         json=to_send,

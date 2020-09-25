@@ -8,6 +8,11 @@ Current projects setup looks like that:
 There are celery tasks running every minute (could be configured to something more/less often in `settings.py`)
 Tasks are doing calls to APIs to gather info about crypto and stock prices, transform received data to `graphite` metrics format and do HTTP requests with metrics (in `json` format using BasictAuth) to graphite.
 
+## Grafana part
+
+Currenlty created dashboard for this project is here: https://redata.grafana.net/d/sxT6ujOMk/simple-trading-board?orgId=1
+It's possible edit what if shown and display new matrics if they are exported (specified in `settings.py`)
+
 ## Running manual ingestion locally
 
 To run/test ingestion locally you need to install requires, make sure your environment has variables needed by this project and then run python run_once script. Run `python run_once -h` for help. Current project was tested with `python 3.8.5`
@@ -134,3 +139,10 @@ So you can do install (when already on proper virtualenv)
 
 // TODO setup.py is bare minimum doesn't have requirements specified for example
 
+## Potential improvements
+
+Looking at this, if I had ability to track how stack/coins are changing for example when they drop below cetain
+threshold (and get alert on that) I would even probably use it for my investing.
+Settings this thresholds can be done manually, but some automatic way would be cool and I think also usefull so I will think about adding that.
+
+As US stocks are chaging only on certain hours it doesn't make sense to query API calls all the time. Some simple changes (to check time) should be enough to fix that. More tricky thing is how/if show it differently in grafana (currently it shows long stagnant period, which may not be bad but looks a bit strange)

@@ -49,7 +49,7 @@ heroku logs -t -p worker
 
 **How to support much larger of metrics?**
 
-From code perspective it should be easy to add new sources/metrics by either just updating `settings.py` or  adding new Celery tasks with different sources. If number of metrics we want to track is often changing, I think good idea would be to create relational database with those metrics and make it used by tasks so that deployment is not needed to add new metrics. Ideas, thouhts on how efficient it will be later.
+From code perspective it should be easy to add new sources/metrics by either just updating `settings.py` or  adding new Celery tasks with different sources. If number of metrics we want to track is often changing, I think good idea would be to create relational database with those metrics and make it used by tasks so that deployment is not needed to add new metrics. Ideas, thgouhts on how efficient it will be later.
 
 **What if you needed to sample them more frequently?**
 

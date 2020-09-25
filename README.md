@@ -49,12 +49,11 @@ heroku logs -t -p worker
 
 **How to support much larger of metrics?**
 
-From code perspective it should be easy to add new sources/metrics by either just updating `settings.py` or  adding new Celery tasks with different sources. If number of metrics we want to track is often changing, I think good idea would be to create relational database with those metrics and make it used by tasks so that deployment is not needed to add new metrics. Ideas, thgouhts on how efficient it will be later.
+From code perspective it should be easy to add new sources/metrics by either just updating `settings.py` or  adding new Celery tasks with different sources. If number of metrics we want to track is often changing, I think good idea would be to create relational database with those metrics and make it used by tasks so that deployment is not needed to add new metrics. Ideas, thoughts on how efficient it will be later.
 
 **What if you needed to sample them more frequently?**
 
 Celery can run more often than every minute and it's just part of settings to run more frequently. But of course there maybe some issues if we decide to run it every second etc, current limitation being using HTTPS to get/send data. So here it's possible we would need to switch to different methods to make it work properly.
-https://graphite.readthedocs.io/en/latest/feeding-carbon.html#using-amqp
 
 **Had many users accessing your dashboard to view metrics?**
 
@@ -92,7 +91,7 @@ I believe it requires creating dashboard just for alerts and updating json of th
 **What would you be measuring and alerting on**?
 
 On network side:
-- requests HTTP errors and response time (both from external API's and Graphite)
+- requests HTTPS errors and response time (both from external API's and Graphite)
 I started with sending those to grafana and making dashboard for those logs there.
 
 On Grafana side:

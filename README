@@ -88,6 +88,36 @@ On Heroku side
  - some general Celery/redis performance metrics. Some of them are already available on Heroku.
 
 
-## Potential improvements
+## Running tests.
 
-Make tests runnable with py.test
+For running tests use py.test example:
+
+```bash
+py.test tests/*
+```
+
+## Code formatting
+
+Project is using Black as code formatter, so before commiting make sure you run
+
+```bash
+black .
+```
+
+//TODO Add running black to precommit hooks
+
+
+## Enviroment/Dev setup
+
+Currently project does not have any setup to create/activate virtualenvs.
+I'm using pyenv for this, but feel free to use whateher sounds best.
+
+There is one setup script dev.sh, for making datametircs package importable for
+anywhere in the project/system (simple adding project to python path) Run it like that:
+
+```bash
+source dev.sh
+```
+
+
+## Potential improvements

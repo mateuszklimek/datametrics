@@ -1,15 +1,16 @@
 import requests
 import datetime
 from requests.auth import HTTPBasicAuth
+from typing import Dict, Sequence
 
 from datametrics import settings
 
 
-def get_epoch_in_seconds():
+def get_epoch_in_seconds() -> int:
     return int(datetime.datetime.now().timestamp())
 
 
-def send_data(data):
+def send_data(data: Sequence[Dict]):
     print("sending data:", data)
 
     # TODO: There are more efficient formats than json (to send data) available.
@@ -29,7 +30,9 @@ def send_data(data):
     print(response.text)
 
 
-def get_metric_values(metric_type, metric_symbol, dict_el, metrics_values):
+def get_metric_values(
+    metric_type: str, metric_symbol: str, dict_el: Dict, metrics_values: Sequence
+) -> Sequence[Dict]:
     data = [
         {
             "name": "{}.{}-{}".format(metric_type, metric_symbol, key),

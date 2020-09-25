@@ -60,10 +60,3 @@ def test_parsing_iex():
 
     assert all(symbol in metric_names for symbol in some_expected_symbols)
     print(metrics)
-
-
-if __name__ == "__main__":
-    test_parsing_livecoin()
-    test_parsing_iex()
-
-    print("Tests successfully passed!")

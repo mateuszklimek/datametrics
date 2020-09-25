@@ -1,10 +1,6 @@
 import celery
 import requests
-from datametrics import (
-    graphite,
-    transform,
-    settings
-)
+from datametrics import graphite, transform, settings
 
 app = celery.Celery(settings.CELERY_APP_NAME)
 app.conf.update(BROKER_URL=settings.REDIS_URL, CELERY_RESULT_BACKEND=settings.REDIS_URL)
@@ -12,7 +8,7 @@ app.conf.CELERYBEAT_SCHEDULE = settings.CELERY_TASKS_TO_RUN
 
 
 @app.task
-def send_stocks_to_graphite():
+def send_stocks_to_graphite() -> None:
     stocks_str = ",".join(settings.STOCKS_TO_TRACK)
 
     response = requests.get(
@@ -28,7 +24,7 @@ def send_stocks_to_graphite():
 
 
 @app.task
-def send_livecoin_to_graphite():
+def send_livecoin_to_graphite() -> None:
     response = requests.get(settings.LIVE_COIN_API_URL)
 
     if response.status_code != 200:

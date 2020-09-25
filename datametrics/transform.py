@@ -1,9 +1,9 @@
 from datametrics.graphite import get_metric_values
 from datametrics import settings
-from typing import Sequence, Dict
+from typing import List, Dict
 
 
-def iex_to_metrics(json_response: Dict) -> Sequence[Dict]:
+def iex_to_metrics(json_response: Dict) -> List[Dict]:
     data_to_export = []
 
     for symbol in json_response.keys():
@@ -19,7 +19,7 @@ def iex_to_metrics(json_response: Dict) -> Sequence[Dict]:
     return data_to_export
 
 
-def livecoin_to_metrics(json_response: Dict) -> Sequence[Dict]:
+def livecoin_to_metrics(json_response: Dict) -> List[Dict]:
     symbols_exported = [
         f"{el}/{settings.CRYPTO_COMPARE_CURRENCY}" for el in settings.CRYPTO_TO_TRACK
     ]

@@ -1,7 +1,8 @@
 import requests
 import datetime
 from requests.auth import HTTPBasicAuth
-from typing import Dict, Sequence
+from requests.models import Response
+from typing import Dict, List
 
 from datametrics import settings
 
@@ -10,15 +11,18 @@ def get_epoch_in_seconds() -> int:
     return int(datetime.datetime.now().timestamp())
 
 
-def send_data(data: Sequence[Dict]):
-    print("sending data:", data)
+def send_data(data: List[Dict], health_metrics: List[Dict] = None):
+
+    to_send = data + (health_metrics or [])
+
+    print("sending data:", to_send)
 
     # TODO: There are more efficient formats than json (to send data) available.
     # It's possible it's worth changing to them in case more efficient transfer
     # is needed (etc. much bigger amounts of data are sent)
     response = requests.post(
         settings.GRAPHITE_URL,
-        json=data,
+        json=to_send,
         # TODO: Consider other auth methods
         auth=HTTPBasicAuth(settings.GRAPHITE_USER, settings.GRAPHITE_PASSWORD),
     )
@@ -31,8 +35,8 @@ def send_data(data: Sequence[Dict]):
 
 
 def get_metric_values(
-    metric_type: str, metric_symbol: str, dict_el: Dict, metrics_values: Sequence
-) -> Sequence[Dict]:
+    metric_type: str, metric_symbol: str, dict_el: Dict, metrics_values: List
+) -> List[Dict]:
     data = [
         {
             "name": "{}.{}-{}".format(metric_type, metric_symbol, key),
@@ -44,3 +48,21 @@ def get_metric_values(
     ]
 
     return data
+
+
+def get_health_metrics_from_response(name: str, response: Response) -> List[Dict]:
+    time_metric = {
+        "name": f"metrics.{name}.response.time",
+        "value": response.elapsed.total_seconds(),
+        "interval": 1,
+        "time": get_epoch_in_seconds(),
+    }
+
+    response_time_metric = {
+        "name": f"metrics.{name}.response.status_code",
+        "value": response.status_code,
+        "interval": 1,
+        "time": get_epoch_in_seconds(),
+    }
+
+    return [time_metric, response_time_metric]

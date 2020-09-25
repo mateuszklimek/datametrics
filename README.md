@@ -46,10 +46,14 @@ heroku logs -t -p worker
 
 **How to support much larger of metrics?** From code perspective it should be easy to add new sources/metrics by either just updating `settings.py` or  adding new Celery tasks with different sources. If number of metrics we want to track is often changing, I think good idea would be to create relational database with those metrics and make it used by tasks so that deployment is not needed to add new metrics.
 
-**What if you needed to sample them more frequently?** Celery can run more often than every minute and it's just part of settings to run more frequently. But of course there maybe some issues if we decide to run it every second etc, current limitation being using HTTP to get/send data. So here it's possible we would need to switch to different methods. 
+**What if you needed to sample them more frequently?** Celery can run more often than every minute and it's just part of settings to run more frequently. But of course there maybe some issues if we decide to run it every second etc, current limitation being using HTTP to get/send data. So here it's possible we would need to switch to different methods to make it work properly.
 https://graphite.readthedocs.io/en/latest/feeding-carbon.html#using-amqp
 
-**Had many users accessing your dashboard to view metrics>** This is on Grafana side. Current plan support just 10 users so it obviously doesn't work with it. I read about people running grafana with 10,000 people TODO
+**Had many users accessing your dashboard to view metrics>** This is on Grafana side. Current plan support just 10 users (and 5$ for every other).
+If it's to be open to the world, it's possible Grafana wouldn't be good choice, and some other frontend service querying possibly still Graphite would be necessary.
+In those cases, it would be probably good to add some cache on top of Graphite to support usecase for very many simlar queries.
+Some ideas to still go with Grafana would be to either use Grafana snopshots (which are publicly avialble just not refreshing) and build a service based on that (seems I bit hacky and not sure if easly possible).
+Also with self hosted Grafana it's probably possible to do it for larger number of users with caching and multiple grafana instances. [Some suggestions here](https://community.grafana.com/t/how-many-concurrent-users-sessions-can-grafana-handle/11769)
 
 ### Storage 
 Storing metrics is done only on `graphite` side, so to support much bigger number of metrics/data you need to make sure your graphite have space to that. With my current setup using GrafanaLabs I can store up to 100GB of logs there before being charged more.., but it should automatically scale with more usage. From what is see retention policies also ones which store data with less granularity are also possible to setup if we want to save on space stored: [https://graphite.readthedocs.io/en/latest/config-carbon.html](https://graphite.readthedocs.io/en/latest/config-carbon.html)
@@ -78,7 +82,7 @@ proper data to Grafana.
 **What would you be measuring and alerting on*?
 
 On Celery tasks side
-- requests HTTP errors and response time (both from external API's and Graphite.
+- requests HTTP errors and response time (both from external API's and Graphite)
 I would start with sending those to grafana and making dashboard for those logs there.
 
 On Grafana side 
@@ -117,12 +121,13 @@ black .
 Currently project does not have any setup to create/activate virtualenvs.
 I'm using pyenv for this, but feel free to use whateher sounds best.
 
-There is one setup script dev.sh, for making datametircs package importable for
-anywhere in the project/system (simple adding project to python path) Run it like that:
+There is one setup script setup_dev.sh, which install requirements and package in dev mode.
+So you can do install (when already on proper virtualenv)
 
 ```bash
-source dev.sh
+./setup_dev.sh
 ```
 
+// TODO setup.py is bare minimum doesn't have requirements specified for example
 
 ## Potential improvements

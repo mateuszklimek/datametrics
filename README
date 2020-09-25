@@ -64,28 +64,33 @@ Celery can run multiple tasks at once gathering and publishing various metrics. 
 
 ## Monitoring:
 
-As Grafana is hosted in the cloud I think it can be mostly be assumed frontend side is working (Or doesn't be cannot be fixed by me)
+As Grafana is hosted in the cloud I think it can be mostly be assumed frontend side is working (Or doesn't but cannot be fixed by me)
 
-So I think most important is making sure Celery processes are working properly and not receiving any errors when making requests to APIs or Graphite.
+So I think most important is making sure Celery processes are working properly and not receiving any errors when making requests to APIs and sending
+proper data to Grafana.
 
-**How would you track the health and uptime of your application?** Assuming here with running Grafana in the servvice 
-
- - As project is already using grafana, I would also add logger which would dump any http errors we receive from requests
- to livecoin feed, or grafana's graphite. There is service on graphana called Loki so would like to use this one.
+**How would you track the health and uptime of your application?**
+ 
+ - Grafana makes it possible to add alerts on dashboads (for example alerting if we didn't received any data on stock in last minute/5 minutes etc)
+   To not create those manually for all things exported, it would be nice to create it automatically when adding new sources/stocks etc.
+   I believe it requires creating dashbaord just for alerts and updating json of that dashbaord (to contain allerts required) when they are changes in metrics we export.
 
 **What would you be measuring and alerting on*?
 
-On Celery tasks side - requests HTTP errors and response time (both from external API's and Graphite.
-I would start with sending those using Loking to grafana and making dashboard for those logs there.
+On Celery tasks side
+- requests HTTP errors and response time (both from external API's and Graphite.
+I would start with sending those to grafana and making dashboard for those logs there.
 
 On Grafana side 
  - would be checking if data is coming, so alerting on situation when we didn't received new data for specific dashboards.
 Those allerts are is something actually already added.
  - also could alert on some not expected data, for example for all crypto/stocks we can assume it will be larger than 0.
- - costs or running it :) and for that they actually have dashboard already prepared
+ - costs of running it :) and for that they actually have dashboard already prepared..
 
 On Heroku side
  - some general Celery/redis performance metrics. Some of them are already available on Heroku.
+ - Number of time tasks spend waiting on responses
+ - Similarly to graphana potential costs, how close to limits in current plan we are, etc. 
 
 
 ## Running tests.

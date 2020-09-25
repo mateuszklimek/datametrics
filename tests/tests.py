@@ -60,3 +60,6 @@ def test_parsing_iex():
 
     assert all(symbol in metric_names for symbol in some_expected_symbols)
     print(metrics)
+
+
+#TODO Adding tests for geting time/response code from response

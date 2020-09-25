@@ -108,7 +108,7 @@ On Heroku side
 
 ## Running tests.
 
-For running tests use py.test example:
+For running tests use py.test example, you need to setup env variables for that, they could be dummy ones as tests are not really sending real data
 
 ```bash
 py.test tests/*

@@ -6,19 +6,19 @@ Pushing metrics (gathered from API/Internet) to graphite, to make them visible i
 
 Current projects setup looks like that:
 There are celery tasks running every minute (could be configured to something more/less often in `settings.py`)
-Tasks are doing calls to APIs to gather info about crypto and stock prices, transform received data to `graphite` metrics format and do HTTP requests with metrics (in `json` format using BasictAuth) to graphite.
+Tasks are doing calls to APIs to gather info about crypto and stock prices, transform received data to `graphite` metrics format and do HTTPS requests with metrics (in `json` format using BasictAuth) to graphite. Graphite is then quered by Grafan to show dashboards.
 
 ## Grafana part
 
 Currenlty created dashboard for this project is here: https://redata.grafana.net/d/sxT6ujOMk/simple-trading-board?orgId=1
-It's possible edit what if shown and display new matrics if they are exported (specified in `settings.py`)
+It's possible edit what is showed and display new matrics if they are exported (specified in `settings.py`) (You need to get Grafana invitation to be able to view this)
 
 ## Running manual ingestion locally
 
-To run/test ingestion locally you need to install requires, make sure your environment has variables needed by this project and then run python run_once script. Run `python run_once -h` for help. Current project was tested with `python 3.8.5`
+To run/test ingestion locally you need to install requirements, make sure your environment has variables needed by this project and then run python run_once script. Run `python run_once -h` for help. Current project was tested with `python 3.8.5`
 
 ```bash
-./setup_dev.sh # install requires
+./setup_dev.sh # install requirements
 export REDIS_URL=<REDIS_URL>
 export GRAPHITE_USER=<GRAPHANA_BASIC_AUTH_USER>
 export GRAPHITE_PASSWORD=<GRAPHANA_BASIC_AUTH_PASSWORD>
@@ -49,11 +49,11 @@ heroku logs -t -p worker
 
 **How to support much larger of metrics?**
 
-From code perspective it should be easy to add new sources/metrics by either just updating `settings.py` or  adding new Celery tasks with different sources. If number of metrics we want to track is often changing, I think good idea would be to create relational database with those metrics and make it used by tasks so that deployment is not needed to add new metrics. Ideas on making it efficent later.
+From code perspective it should be easy to add new sources/metrics by either just updating `settings.py` or  adding new Celery tasks with different sources. If number of metrics we want to track is often changing, I think good idea would be to create relational database with those metrics and make it used by tasks so that deployment is not needed to add new metrics. Ideas, thouhts on how efficient it will be later.
 
 **What if you needed to sample them more frequently?**
 
-Celery can run more often than every minute and it's just part of settings to run more frequently. But of course there maybe some issues if we decide to run it every second etc, current limitation being using HTTP to get/send data. So here it's possible we would need to switch to different methods to make it work properly.
+Celery can run more often than every minute and it's just part of settings to run more frequently. But of course there maybe some issues if we decide to run it every second etc, current limitation being using HTTPS to get/send data. So here it's possible we would need to switch to different methods to make it work properly.
 https://graphite.readthedocs.io/en/latest/feeding-carbon.html#using-amqp
 
 **Had many users accessing your dashboard to view metrics?**
@@ -75,7 +75,7 @@ For Graphite/Grafana similary if they are just hosted by GrafanaLabs they should
 //TODO Would be nice to know more details here
 
 ### Network
-Celery can run multiple tasks at once gathering and publishing various metrics. Sending data to Grafite could be definitely make much more efficient with using some libraries specific for that (not HTTP requests) more details [here](https://graphite.readthedocs.io/en/latest/feeding-carbon.html). But one important thing to remember is Celery will be doing HTTP requests for external API, so unless that changes at least half of traffic would be still through HTTP.
+Celery can run multiple tasks at once gathering and publishing various metrics. Sending data to Grafite could be definitely made much more efficient with using some libraries specific for that (not HTTPS requests) more details [here](https://graphite.readthedocs.io/en/latest/feeding-carbon.html). But one important thing to remember is Celery will be doing HTTPS requests for external API, so unless that changes at least half of traffic would be still through that. But still even making Celery tasks a half lighter (just API requests) maybe worth doing with big traffic.
 
 ## Monitoring:
 
@@ -86,23 +86,23 @@ So I think most important is making sure Celery processes are working properly a
 **How would you track the health and uptime of your application?**
  
 Grafana makes it possible to add alerts on dashboads (for example alerting if we didn't received any data on stock in last minute/5 minutes etc). To not create those manually for all things exported, it would be nice to create it automatically when adding new sources/stocks etc.
-I believe it requires creating dashboard just for alerts and updating json of that dashboard (to contain allerts required) when they are changes in metrics we export.
+I believe it requires creating dashboard just for alerts and updating json of that dashboard (to contain alerts required) when they are changes in metrics we export.
 
 
 **What would you be measuring and alerting on**?
 
-On Celery tasks side:
+On network side:
 - requests HTTP errors and response time (both from external API's and Graphite)
 I started with sending those to grafana and making dashboard for those logs there.
 
 On Grafana side:
- - would be checking if data is coming, so alerting on situation when we didn't received new data for specific dashboards. (Added some of those to exsting dashboards)
+ - would be checking if data is coming, so alerting on situation when we didn't received new data for specific dashboards. (Added some of those to existing dashboards)
  - also I would alert on some not expected data, for example for all crypto/stocks we can assume it will be larger than 0. And most likely there are more sophisticated things to do here.
  - costs of running it :) and for that they actually have dashboard already prepared..
 
 On Heroku side
  - some general Celery/redis performance metrics. Some of them are already available on Heroku.
- - Number of time tasks spend waiting on responses
+ - Amount of time tasks spend waiting on responses
  - Similarly to graphana potential costs, how close to limits in current plan we are, etc. 
 
 
@@ -147,6 +147,8 @@ Settings this thresholds can be done manually, but some automatic way would be c
 
 As US stocks are chaging only on certain hours it doesn't make sense to query API calls all the time. Some simple changes (to check time) should be enough to fix that. More tricky thing is how/if show it differently in grafana (currently it shows long stagnant period, which may not be bad but looks a bit strange)
 
-Some metrics initially chosen for test when looking at them are not very informative. It's definitely possible to choose more interesting metrics and delete some if it's not what we want to track. Later requries delete send to Graphite which is not done here yet.
+Some metrics initially chosen for test when looking at them are not very informative. It's definitely possible to choose more interesting metrics and delete some current ones if it's not what we want to track. Later requries delete send to Graphite which is not done here yet.
 
 I didn't squashed commits so history is a bit messy.. :) could still overwrite that.
+
+Currently there is no mechanism of backfilling source, this shouldn't be hard to add if having source which can display historical data.

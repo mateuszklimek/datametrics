@@ -13,14 +13,13 @@ def get_epoch_in_seconds() -> int:
 
 def send_data(data: List[Dict], health_metrics: List[Dict] = None):
 
-    to_send = data + (health_metrics or [])
+    to_send = (data or []) + (health_metrics or [])
 
     print("sending data:", to_send)
 
     response = requests.post(
         settings.GRAPHITE_URL,
         json=to_send,
-        # TODO: Consider other auth methods
         auth=HTTPBasicAuth(settings.GRAPHITE_USER, settings.GRAPHITE_PASSWORD),
     )
 

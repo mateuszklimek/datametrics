@@ -146,3 +146,7 @@ threshold (and get alert on that) I would even probably use it for my investing.
 Settings this thresholds can be done manually, but some automatic way would be cool and I think also usefull so I will think about adding that.
 
 As US stocks are chaging only on certain hours it doesn't make sense to query API calls all the time. Some simple changes (to check time) should be enough to fix that. More tricky thing is how/if show it differently in grafana (currently it shows long stagnant period, which may not be bad but looks a bit strange)
+
+Some metrics initially chosen for test when looking at them are not very informative. It's definitely possible to choose more interesting metrics and delete some if it's not what we want to track. Later requries delete send to Graphite which is not done here yet.
+
+I didn't squashed commits so history is a bit messy.. :) could still overwrite that.

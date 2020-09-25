@@ -9,7 +9,6 @@ celery==4.4.7
 certifi==2020.6.20
 chardet==3.0.4
 click==7.1.2
--e git+git@github.com:mateuszklimek/datametrics.git@f7d7fba6b39a1b53ce424891fce41c4157bc1be9#egg=datametrics
 decorator==4.4.2
 idna==2.10
 iniconfig==1.0.1
